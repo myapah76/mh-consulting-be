@@ -1,0 +1,13 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  jpa:
+    show-sql: true
+
+server:
+  servlet:
+    session:
+      cookie:
+        secure: false
+

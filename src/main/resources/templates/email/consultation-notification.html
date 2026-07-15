@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Yêu cầu tư vấn mới</title></head>
+<body style="font-family:Arial,sans-serif;color:#222;line-height:1.5">
+<div style="max-width:640px;margin:auto;border:1px solid #eee;border-radius:8px;overflow:hidden">
+  <div style="background:#d40000;color:#fff;padding:20px"><h2 style="margin:0">Yêu cầu tư vấn mới</h2></div>
+  <div style="padding:20px">
+    <table style="width:100%;border-collapse:collapse">
+      <tr><td style="padding:7px;font-weight:bold">Mã yêu cầu</td><td style="padding:7px" th:text="${request.id}"></td></tr>
+      <tr><td style="padding:7px;font-weight:bold">Khách hàng</td><td style="padding:7px" th:text="${request.customerName}"></td></tr>
+      <tr><td style="padding:7px;font-weight:bold">Điện thoại</td><td style="padding:7px" th:text="${request.phone}"></td></tr>
+      <tr><td style="padding:7px;font-weight:bold">Email</td><td style="padding:7px" th:text="${request.email ?: 'Không cung cấp'}"></td></tr>
+      <tr><td style="padding:7px;font-weight:bold">Dịch vụ</td><td style="padding:7px" th:text="${request.serviceTitle ?: 'Chưa chọn'}"></td></tr>
+      <tr><td style="padding:7px;font-weight:bold">Thời gian</td><td style="padding:7px" th:text="${submittedAt}"></td></tr>
+    </table>
+    <h3>Nội dung</h3>
+    <p style="white-space:pre-wrap" th:text="${request.message ?: 'Không có lời nhắn'}"></p>
+  </div>
+</div>
+</body>
+</html>
