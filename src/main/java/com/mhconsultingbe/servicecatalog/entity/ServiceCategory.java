@@ -11,7 +11,10 @@ public enum ServiceCategory {
 
     private final String apiValue;
     ServiceCategory(String apiValue) { this.apiValue = apiValue; }
-    @JsonValue public String apiValue() { return apiValue; }
+    @JsonValue
+    public String apiValue() {
+        return apiValue;
+    }
 
     @JsonCreator
     public static ServiceCategory fromApiValue(String value) {

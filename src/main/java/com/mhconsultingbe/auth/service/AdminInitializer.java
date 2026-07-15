@@ -20,11 +20,17 @@ public class    AdminInitializer implements ApplicationRunner {
     private final AdminRepository repository;
     private final PasswordEncoder passwordEncoder;
 
-    @Value("${app.admin.email:}") private String email;
-    @Value("${app.admin.password:}") private String password;
-    @Value("${app.admin.full-name:Administrator}") private String fullName;
+    @Value("${app.admin.email:}")
+    private String email;
 
-    @Override @Transactional
+    @Value("${app.admin.password:}")
+    private String password;
+
+    @Value("${app.admin.full-name:Administrator}")
+    private String fullName;
+
+    @Override
+    @Transactional
     public void run(ApplicationArguments args) {
         var normalizedEmail = TextNormalizer.lowercase(email);
         if (normalizedEmail == null || password == null || password.isBlank()) {
