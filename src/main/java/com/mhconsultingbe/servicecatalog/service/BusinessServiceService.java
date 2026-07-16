@@ -155,9 +155,12 @@ public class BusinessServiceService implements BusinessServiceOperations, Servic
     @Override
     @Transactional(readOnly = true)
     public Optional<ServiceReference> findActiveReference(UUID id) {
-        return repository.findById(id)
-                .filter(BusinessService::isActive)
-                .map(service -> new ServiceReference(service.getId(), service.getTitle()));
+        return repository.findByIdAndActiveTrue(id)
+                .map(service -> new ServiceReference(
+                        service.getId(),
+                        service.getTitle(),
+                        service.getCategory().getName()
+                ));
     }
 
     private BusinessService required(UUID id) {

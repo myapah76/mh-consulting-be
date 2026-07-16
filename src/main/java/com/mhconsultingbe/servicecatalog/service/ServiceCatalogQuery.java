@@ -6,6 +6,6 @@ import java.util.UUID;
 public interface ServiceCatalogQuery {
     Optional<ServiceReference> findActiveReference(UUID id);
 
-    record ServiceReference(UUID id, String title) {
+    record ServiceReference(UUID id, String title, String categoryName) {
     }
 }

@@ -35,14 +35,14 @@ public class ConsultationService {
         request.setPhone(body.phone().trim().replaceAll("[\\s.-]", ""));
         request.setEmail(TextNormalizer.lowercase(body.email()));
         request.setMessage(TextNormalizer.plainText(body.message()));
-        if (body.serviceId() != null) {
-            var selected = serviceCatalog.findActiveReference(body.serviceId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Selected active service not found"));
-            request.setServiceId(selected.id()); request.setServiceTitleSnapshot(selected.title());
-        }
+        var selected = serviceCatalog.findActiveReference(body.serviceId())
+                .orElseThrow(() -> new ResourceNotFoundException("Selected active service not found"));
+        request.setServiceId(selected.id());
+        request.setServiceTitleSnapshot(selected.title());
         request = repository.save(request);
         events.publishEvent(new ConsultationSubmittedEvent(request.getId(), request.getCustomerName(), request.getPhone(),
-                request.getEmail(), request.getServiceTitleSnapshot(), request.getMessage(), request.getCreatedAt()));
+                request.getEmail(), selected.categoryName(), request.getServiceTitleSnapshot(), request.getMessage(),
+                request.getCreatedAt()));
         return new ConsultationCreatedResponse(request.getId(), request.getStatus().name(), "Consultation request received", request.getCreatedAt());
     }
 

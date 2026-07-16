@@ -1,21 +1,110 @@
 <!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>Yêu cầu tư vấn mới</title></head>
-<body style="font-family:Arial,sans-serif;color:#222;line-height:1.5">
-<div style="max-width:640px;margin:auto;border:1px solid #eee;border-radius:8px;overflow:hidden">
-  <div style="background:#d40000;color:#fff;padding:20px"><h2 style="margin:0">Yêu cầu tư vấn mới</h2></div>
-  <div style="padding:20px">
-    <table style="width:100%;border-collapse:collapse">
-      <tr><td style="padding:7px;font-weight:bold">Mã yêu cầu</td><td style="padding:7px" th:text="${request.id}"></td></tr>
-      <tr><td style="padding:7px;font-weight:bold">Khách hàng</td><td style="padding:7px" th:text="${request.customerName}"></td></tr>
-      <tr><td style="padding:7px;font-weight:bold">Điện thoại</td><td style="padding:7px" th:text="${request.phone}"></td></tr>
-      <tr><td style="padding:7px;font-weight:bold">Email</td><td style="padding:7px" th:text="${request.email ?: 'Không cung cấp'}"></td></tr>
-      <tr><td style="padding:7px;font-weight:bold">Dịch vụ</td><td style="padding:7px" th:text="${request.serviceTitle ?: 'Chưa chọn'}"></td></tr>
-      <tr><td style="padding:7px;font-weight:bold">Thời gian</td><td style="padding:7px" th:text="${submittedAt}"></td></tr>
-    </table>
-    <h3>Nội dung</h3>
-    <p style="white-space:pre-wrap" th:text="${request.message ?: 'Không có lời nhắn'}"></p>
-  </div>
+<head>
+    <meta charset="UTF-8">
+    <title>Yêu cầu tư vấn mới</title>
+</head>
+
+<body style="margin:0;padding:20px;background:#f5f5f5;font-family:Arial,sans-serif;color:#222;line-height:1.5">
+<div style="max-width:640px;margin:0 auto;background:#fff;border:1px solid #eee;border-radius:8px;overflow:hidden">
+
+    <div style="background:#d40000;color:#fff;padding:20px">
+        <h2 style="margin:0;font-size:22px">
+            Yêu cầu tư vấn mới
+        </h2>
+    </div>
+
+    <div style="padding:20px">
+        <table style="width:100%;border-collapse:collapse">
+            <tr>
+                <td style="padding:7px;font-weight:bold">Mã yêu cầu</td>
+                <td style="padding:7px" th:text="${request.id}"></td>
+            </tr>
+
+            <tr>
+                <td style="padding:7px;font-weight:bold">Khách hàng</td>
+                <td style="padding:7px" th:text="${request.customerName}"></td>
+            </tr>
+
+            <tr>
+                <td style="padding:7px;font-weight:bold">Điện thoại</td>
+                <td style="padding:7px" th:text="${request.phone}"></td>
+            </tr>
+
+            <tr>
+                <td style="padding:7px;font-weight:bold">Email</td>
+                <td
+                        style="padding:7px"
+                        th:text="${#strings.isEmpty(request.email)
+                        ? 'Không cung cấp'
+                        : request.email}"
+                ></td>
+            </tr>
+
+            <tr>
+                <td style="padding:7px;font-weight:bold">Mã dịch vụ</td>
+                <td style="padding:7px" th:text="${request.serviceId}"></td>
+            </tr>
+
+            <tr>
+                <td style="padding:7px;font-weight:bold">
+                    Danh mục dịch vụ
+                </td>
+                <td
+                        style="padding:7px"
+                        th:text="${request.serviceCategoryName}"
+                ></td>
+            </tr>
+
+            <tr>
+                <td style="padding:7px;font-weight:bold">
+                    Dịch vụ cần tư vấn
+                </td>
+                <td
+                        style="padding:7px"
+                        th:text="${request.serviceTitle}"
+                ></td>
+            </tr>
+
+            <tr>
+                <td style="padding:7px;font-weight:bold">Thời gian</td>
+                <td style="padding:7px" th:text="${submittedAt}"></td>
+            </tr>
+        </table>
+
+        <h3 style="margin:20px 0 8px">Nội dung cần tư vấn</h3>
+
+        <p
+                style="margin:0;white-space:pre-wrap"
+                th:text="${#strings.isEmpty(request.message)
+                ? 'Không có lời nhắn'
+                : request.message}"
+        ></p>
+    </div>
+
+    <footer
+            style="padding:18px 20px;background:#f5f5f5;border-top:1px solid #e5e5e5;text-align:center;color:#666"
+    >
+        <p style="margin:0 0 8px;font-size:13px">
+            Để tìm hiểu thêm về các dịch vụ kế toán và thuế,
+            vui lòng truy cập website MH Consulting.
+        </p>
+
+        <p style="margin:0 0 8px">
+            <a
+                    th:href="${websiteUrl}"
+                    style="color:#d40000;font-size:13px;font-weight:bold;text-decoration:none"
+            >
+                MH Consulting
+            </a>
+        </p>
+
+        <p style="margin:0;font-size:12px;color:#888">
+            ©
+            <span th:text="${currentYear}">2026</span>
+            MH Consulting. Mọi quyền được bảo lưu.
+        </p>
+    </footer>
 </div>
 </body>
 </html>

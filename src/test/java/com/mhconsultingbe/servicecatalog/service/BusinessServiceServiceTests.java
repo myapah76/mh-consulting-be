@@ -2,6 +2,7 @@ package com.mhconsultingbe.servicecatalog.service;
 
 import com.mhconsultingbe.consultation.service.ConsultationReferenceQuery;
 import com.mhconsultingbe.servicecatalog.dto.ServiceUpsertRequest;
+import com.mhconsultingbe.servicecatalog.entity.BusinessService;
 import com.mhconsultingbe.servicecatalog.entity.ServiceCategory;
 import com.mhconsultingbe.servicecatalog.repository.BusinessServiceRepository;
 import com.mhconsultingbe.servicecatalog.repository.ServiceCategoryRepository;
@@ -13,7 +14,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -48,6 +51,25 @@ class BusinessServiceServiceTests {
 
         assertThrows(InvalidRequestException.class, () -> service.create(request(categoryId)));
         verify(repository, never()).save(any());
+    }
+
+    @Test
+    void activeReferenceIncludesCategoryDerivedFromService() {
+        UUID serviceId = UUID.randomUUID();
+        ServiceCategory category = new ServiceCategory();
+        category.setName("Kế toán");
+        BusinessService businessService = new BusinessService();
+        businessService.setId(serviceId);
+        businessService.setTitle("Dịch Vụ Kế Toán Trọn Gói");
+        businessService.setCategory(category);
+        when(repository.findByIdAndActiveTrue(serviceId)).thenReturn(Optional.of(businessService));
+
+        var result = service.findActiveReference(serviceId);
+
+        assertTrue(result.isPresent());
+        assertEquals(serviceId, result.orElseThrow().id());
+        assertEquals("Dịch Vụ Kế Toán Trọn Gói", result.orElseThrow().title());
+        assertEquals("Kế toán", result.orElseThrow().categoryName());
     }
 
     private ServiceUpsertRequest request(UUID categoryId) {
