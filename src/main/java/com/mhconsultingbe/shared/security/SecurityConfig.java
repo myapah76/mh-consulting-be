@@ -54,13 +54,15 @@ public class SecurityConfig {
                                 "/api/public/consultations"
                         )
                 )
+
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/actuator/health/**",
                                 "/error",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html"
+                                "/swagger-ui.html",
+                                "/api/health"
                         )
                         .permitAll()
                         .requestMatchers(
