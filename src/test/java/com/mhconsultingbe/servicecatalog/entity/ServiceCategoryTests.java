@@ -1,12 +1,16 @@
 package com.mhconsultingbe.servicecatalog.entity;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ServiceCategoryTests {
-    @Test void mapsFrontendApiValues() {
-        assertEquals(ServiceCategory.THANH_LAP, ServiceCategory.fromApiValue("thanh-lap"));
-        assertEquals("ke-toan", ServiceCategory.KE_TOAN.apiValue());
-        assertThrows(IllegalArgumentException.class, () -> ServiceCategory.fromApiValue("invalid"));
+    @Test
+    void defaultsToActiveWithZeroDisplayOrder() {
+        ServiceCategory category = new ServiceCategory();
+
+        assertTrue(category.isActive());
+        assertEquals(0, category.getDisplayOrder());
     }
 }

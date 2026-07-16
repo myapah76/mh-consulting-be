@@ -2,8 +2,7 @@ package com.mhconsultingbe.servicecatalog.controller;
 
 import com.mhconsultingbe.servicecatalog.dto.ServiceResponse;
 import com.mhconsultingbe.servicecatalog.dto.ServiceSummaryResponse;
-import com.mhconsultingbe.servicecatalog.entity.ServiceCategory;
-import com.mhconsultingbe.servicecatalog.service.BusinessServiceService;
+import com.mhconsultingbe.servicecatalog.service.BusinessServiceOperations;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/public/services")
 @RequiredArgsConstructor
 public class PublicServiceController {
-    private final BusinessServiceService service;
+    private final BusinessServiceOperations service;
 
     @GetMapping
     Page<ServiceSummaryResponse> list(
@@ -29,9 +28,9 @@ public class PublicServiceController {
             @RequestParam(defaultValue = "20")
             int size,
             @RequestParam(required = false)
-            String[] sort
+            String sort
     ) {
-        return service.list(category == null ? null : ServiceCategory.fromApiValue(category), active, page, size, sort);
+        return service.list(category, active, page, size, sort);
     }
 
     @GetMapping("/{slug}")

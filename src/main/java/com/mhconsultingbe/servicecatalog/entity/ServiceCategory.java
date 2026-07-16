@@ -1,24 +1,54 @@
 package com.mhconsultingbe.servicecatalog.entity;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.mhconsultingbe.shared.exception.ResourceNotFoundException;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
 
-import java.util.Arrays;
+import java.time.Instant;
+import java.util.UUID;
 
-public enum ServiceCategory {
-    THANH_LAP("thanh-lap"), KE_TOAN("ke-toan"), THUE("thue"), KHAC("khac");
+@Entity
+@Table(name = "service_categories")
+@Getter
+@Setter
+@NoArgsConstructor
+public class ServiceCategory {
+    @Id
+    @UuidGenerator
+    private UUID id;
 
-    private final String apiValue;
-    ServiceCategory(String apiValue) { this.apiValue = apiValue; }
-    @JsonValue
-    public String apiValue() {
-        return apiValue;
+    @Column(nullable = false, unique = true, length = 200)
+    private String slug;
+
+    @Column(nullable = false, length = 200)
+    private String name;
+
+    @Column(nullable = false)
+    private boolean active = true;
+
+    @Column(name = "display_order", nullable = false)
+    private int displayOrder;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
+
+    @PrePersist
+    void create() {
+        createdAt = updatedAt = Instant.now();
     }
 
-    @JsonCreator
-    public static ServiceCategory fromApiValue(String value) {
-        return Arrays.stream(values()).filter(v -> v.apiValue.equalsIgnoreCase(value)).findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Unsupported service category: " + value));
+    @PreUpdate
+    void update() {
+        updatedAt = Instant.now();
     }
 }

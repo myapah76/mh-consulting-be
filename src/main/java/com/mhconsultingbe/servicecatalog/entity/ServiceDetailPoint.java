@@ -5,4 +5,5 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "service_detail_points")
-public class ServiceDetailPoint extends ServiceListItem {}
+public class ServiceDetailPoint extends ServiceListItem {
+}

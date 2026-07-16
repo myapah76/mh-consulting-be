@@ -11,43 +11,25 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "admins")
-@Getter
-@Setter
-@NoArgsConstructor
+@Getter @Setter @NoArgsConstructor
 public class Admin {
-    @Id
-    @UuidGenerator
+    @Id @UuidGenerator
     private UUID id;
-
     @Column(nullable = false, unique = true, length = 320)
     private String email;
-
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
-
     @Column(name = "full_name", length = 200)
     private String fullName;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
+    @Enumerated(EnumType.STRING) @Column(nullable = false, length = 30)
     private AdminRole role = AdminRole.ADMIN;
-
     @Column(nullable = false)
     private boolean active = true;
-
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
-
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @PrePersist
-    void create() {
-        createdAt = updatedAt = Instant.now();
-    }
-
-    @PreUpdate
-    void update() {
-        updatedAt = Instant.now();
-    }
+    @PrePersist void create() { createdAt = updatedAt = Instant.now(); }
+    @PreUpdate void update() { updatedAt = Instant.now(); }
 }

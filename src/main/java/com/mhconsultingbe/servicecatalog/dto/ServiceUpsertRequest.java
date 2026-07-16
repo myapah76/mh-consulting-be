@@ -1,10 +1,14 @@
 package com.mhconsultingbe.servicecatalog.dto;
 
-import com.mhconsultingbe.servicecatalog.entity.ServiceCategory;
 import com.mhconsultingbe.shared.validation.ValidationPatterns;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
+import java.util.UUID;
 
 public record ServiceUpsertRequest(
         @NotBlank
@@ -15,7 +19,7 @@ public record ServiceUpsertRequest(
         @Size(max = 200)
         String title,
         @NotNull
-        ServiceCategory category,
+        UUID categoryId,
         @NotBlank
         @Size(max = 1000)
         String shortDesc,
@@ -41,4 +45,5 @@ public record ServiceUpsertRequest(
                 @NotBlank
                 @Size(max = 2000)
                 String> processSteps
-) {}
+) {
+}

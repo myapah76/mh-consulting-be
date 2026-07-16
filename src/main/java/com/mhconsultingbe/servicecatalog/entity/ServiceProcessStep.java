@@ -5,4 +5,5 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "service_process_steps")
-public class ServiceProcessStep extends ServiceListItem {}
+public class ServiceProcessStep extends ServiceListItem {
+}

@@ -4,8 +4,7 @@ import com.mhconsultingbe.servicecatalog.dto.ActivePatchRequest;
 import com.mhconsultingbe.servicecatalog.dto.ServiceResponse;
 import com.mhconsultingbe.servicecatalog.dto.ServiceSummaryResponse;
 import com.mhconsultingbe.servicecatalog.dto.ServiceUpsertRequest;
-import com.mhconsultingbe.servicecatalog.entity.ServiceCategory;
-import com.mhconsultingbe.servicecatalog.service.BusinessServiceService;
+import com.mhconsultingbe.servicecatalog.service.BusinessServiceOperations;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,7 +29,7 @@ import java.util.UUID;
 @RequestMapping("/api/admin/services")
 @RequiredArgsConstructor
 public class AdminServiceController {
-    private final BusinessServiceService service;
+    private final BusinessServiceOperations service;
 
     @GetMapping
     Page<ServiceSummaryResponse> list(
@@ -43,9 +42,9 @@ public class AdminServiceController {
             @RequestParam(defaultValue = "20")
             int size,
             @RequestParam(required = false)
-            String[] sort
+            String sort
     ) {
-        return service.list(category == null ? null : ServiceCategory.fromApiValue(category), active, page, size, sort);
+        return service.list(category, active, page, size, sort);
     }
 
     @GetMapping("/{id}")
@@ -93,7 +92,12 @@ public class AdminServiceController {
             @PathVariable
             UUID id
     ) {
-        return service.delete(id) ? ResponseEntity.noContent().build()
-                : ResponseEntity.ok(Map.of("deleted", false, "active", false, "message", "Referenced service was deactivated"));
+        return service.delete(id)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(Map.of(
+                        "deleted", false,
+                        "active", false,
+                        "message", "Referenced service was deactivated"
+                ));
     }
 }
