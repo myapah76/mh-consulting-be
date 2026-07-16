@@ -1,4 +1,4 @@
-package com.mhconsultingbe.servicecatalog.dto;
+package com.mhconsultingbe.servicecatalog.dto.response;
 
 public record ServiceCategoryDeleteResponse(
         boolean deleted,

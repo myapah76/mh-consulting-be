@@ -1,8 +1,8 @@
 package com.mhconsultingbe.servicecatalog.service;
 
-import com.mhconsultingbe.servicecatalog.dto.ServiceResponse;
-import com.mhconsultingbe.servicecatalog.dto.ServiceSummaryResponse;
-import com.mhconsultingbe.servicecatalog.dto.ServiceUpsertRequest;
+import com.mhconsultingbe.servicecatalog.dto.request.ServiceUpsertRequest;
+import com.mhconsultingbe.servicecatalog.dto.response.ServiceResponse;
+import com.mhconsultingbe.servicecatalog.dto.response.ServiceSummaryResponse;
 import org.springframework.data.domain.Page;
 
 import java.util.UUID;

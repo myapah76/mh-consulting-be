@@ -1,10 +1,9 @@
-package com.mhconsultingbe.servicecatalog.dto;
+package com.mhconsultingbe.servicecatalog.dto.request;
 
 import com.mhconsultingbe.shared.validation.ValidationPatterns;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 import java.util.List;
@@ -28,8 +27,6 @@ public record ServiceUpsertRequest(
         @Size(max = 20000)
         String fullContent,
         Boolean active,
-        @PositiveOrZero
-        Integer displayOrder,
         @Size(max = 100)
         List<
                 @NotBlank

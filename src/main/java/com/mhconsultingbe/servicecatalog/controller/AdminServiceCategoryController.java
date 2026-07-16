@@ -1,9 +1,9 @@
 package com.mhconsultingbe.servicecatalog.controller;
 
-import com.mhconsultingbe.servicecatalog.dto.ActivePatchRequest;
-import com.mhconsultingbe.servicecatalog.dto.AdminServiceCategoryResponse;
-import com.mhconsultingbe.servicecatalog.dto.ServiceCategoryDeleteResponse;
-import com.mhconsultingbe.servicecatalog.dto.ServiceCategoryUpsertRequest;
+import com.mhconsultingbe.servicecatalog.dto.request.ActivePatchRequest;
+import com.mhconsultingbe.servicecatalog.dto.request.ServiceCategoryUpsertRequest;
+import com.mhconsultingbe.servicecatalog.dto.response.AdminServiceCategoryResponse;
+import com.mhconsultingbe.servicecatalog.dto.response.ServiceCategoryDeleteResponse;
 import com.mhconsultingbe.servicecatalog.service.ServiceCategoryOperations;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

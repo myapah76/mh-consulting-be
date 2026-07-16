@@ -1,4 +1,4 @@
-package com.mhconsultingbe.servicecatalog.dto;
+package com.mhconsultingbe.servicecatalog.dto.response;
 
 import java.time.Instant;
 import java.util.List;
@@ -15,7 +15,6 @@ public record ServiceResponse(
         String icon,
         String fullContent,
         boolean active,
-        int displayOrder,
         List<String> detailedPoints,
         List<String> benefits,
         List<String> processSteps,

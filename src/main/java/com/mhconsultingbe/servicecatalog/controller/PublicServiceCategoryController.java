@@ -1,6 +1,6 @@
 package com.mhconsultingbe.servicecatalog.controller;
 
-import com.mhconsultingbe.servicecatalog.dto.ServiceCategoryResponse;
+import com.mhconsultingbe.servicecatalog.dto.response.ServiceCategoryResponse;
 import com.mhconsultingbe.servicecatalog.service.ServiceCategoryQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

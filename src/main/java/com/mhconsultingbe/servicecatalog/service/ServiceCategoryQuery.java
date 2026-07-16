@@ -1,6 +1,6 @@
 package com.mhconsultingbe.servicecatalog.service;
 
-import com.mhconsultingbe.servicecatalog.dto.ServiceCategoryResponse;
+import com.mhconsultingbe.servicecatalog.dto.response.ServiceCategoryResponse;
 
 import java.util.List;
 

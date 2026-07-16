@@ -1,6 +1,6 @@
 package com.mhconsultingbe.servicecatalog.controller;
 
-import com.mhconsultingbe.servicecatalog.dto.ServiceCategoryDeleteResponse;
+import com.mhconsultingbe.servicecatalog.dto.response.ServiceCategoryDeleteResponse;
 import com.mhconsultingbe.servicecatalog.service.ServiceCategoryOperations;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,7 @@
 package com.mhconsultingbe.pagecontent.controller;
 
-import com.mhconsultingbe.pagecontent.dto.*;
+import com.mhconsultingbe.pagecontent.dto.request.PageSectionRequest;
+import com.mhconsultingbe.pagecontent.dto.response.PageSectionResponse;
 import com.mhconsultingbe.pagecontent.service.PageContentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

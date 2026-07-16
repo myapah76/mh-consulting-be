@@ -1,6 +1,7 @@
 package com.mhconsultingbe.consultation.controller;
 
-import com.mhconsultingbe.consultation.dto.*;
+import com.mhconsultingbe.consultation.dto.request.ConsultationCreateRequest;
+import com.mhconsultingbe.consultation.dto.response.ConsultationCreatedResponse;
 import com.mhconsultingbe.consultation.service.ConsultationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

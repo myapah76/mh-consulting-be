@@ -1,7 +1,7 @@
 package com.mhconsultingbe.servicecatalog.controller;
 
-import com.mhconsultingbe.servicecatalog.dto.ServiceResponse;
-import com.mhconsultingbe.servicecatalog.dto.ServiceSummaryResponse;
+import com.mhconsultingbe.servicecatalog.dto.response.ServiceResponse;
+import com.mhconsultingbe.servicecatalog.dto.response.ServiceSummaryResponse;
 import com.mhconsultingbe.servicecatalog.service.BusinessServiceOperations;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

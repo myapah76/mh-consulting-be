@@ -1,4 +1,4 @@
-package com.mhconsultingbe.servicecatalog.dto;
+package com.mhconsultingbe.servicecatalog.dto.response;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -8,7 +8,6 @@ public record AdminServiceCategoryResponse(
         String slug,
         String name,
         boolean active,
-        int displayOrder,
         Instant createdAt,
         Instant updatedAt
 ) {

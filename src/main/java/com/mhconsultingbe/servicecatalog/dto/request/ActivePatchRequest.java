@@ -1,4 +1,4 @@
-package com.mhconsultingbe.servicecatalog.dto;
+package com.mhconsultingbe.servicecatalog.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 

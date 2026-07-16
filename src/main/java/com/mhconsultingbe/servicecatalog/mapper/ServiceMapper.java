@@ -1,7 +1,7 @@
 package com.mhconsultingbe.servicecatalog.mapper;
 
-import com.mhconsultingbe.servicecatalog.dto.ServiceResponse;
-import com.mhconsultingbe.servicecatalog.dto.ServiceSummaryResponse;
+import com.mhconsultingbe.servicecatalog.dto.response.ServiceResponse;
+import com.mhconsultingbe.servicecatalog.dto.response.ServiceSummaryResponse;
 import com.mhconsultingbe.servicecatalog.entity.BusinessService;
 import com.mhconsultingbe.servicecatalog.entity.ServiceCategory;
 import com.mhconsultingbe.servicecatalog.entity.ServiceListItem;
@@ -21,8 +21,7 @@ public final class ServiceMapper {
                 category.getName(),
                 service.getShortDescription(),
                 service.getIcon(),
-                service.isActive(),
-                service.getDisplayOrder()
+                service.isActive()
         );
     }
 
@@ -39,7 +38,6 @@ public final class ServiceMapper {
                 service.getIcon(),
                 service.getFullContent(),
                 service.isActive(),
-                service.getDisplayOrder(),
                 service.getDetailedPoints().stream().map(ServiceListItem::getContent).toList(),
                 service.getBenefits().stream().map(ServiceListItem::getContent).toList(),
                 service.getProcessSteps().stream().map(ServiceListItem::getContent).toList(),

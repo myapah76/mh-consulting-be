@@ -1,6 +1,7 @@
 package com.mhconsultingbe.contact.controller;
 
-import com.mhconsultingbe.contact.dto.*;
+import com.mhconsultingbe.contact.dto.request.ContactSettingsRequest;
+import com.mhconsultingbe.contact.dto.response.ContactSettingsResponse;
 import com.mhconsultingbe.contact.service.ContactSettingsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

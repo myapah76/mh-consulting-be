@@ -1,6 +1,7 @@
 package com.mhconsultingbe.contact.service;
 
-import com.mhconsultingbe.contact.dto.*;
+import com.mhconsultingbe.contact.dto.request.ContactSettingsRequest;
+import com.mhconsultingbe.contact.dto.response.ContactSettingsResponse;
 import com.mhconsultingbe.contact.entity.ContactSettings;
 import com.mhconsultingbe.contact.mapper.ContactSettingsMapper;
 import com.mhconsultingbe.contact.repository.ContactSettingsRepository;

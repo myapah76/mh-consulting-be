@@ -1,6 +1,6 @@
 package com.mhconsultingbe.pagecontent.mapper;
 
-import com.mhconsultingbe.pagecontent.dto.PageSectionResponse;
+import com.mhconsultingbe.pagecontent.dto.response.PageSectionResponse;
 import com.mhconsultingbe.pagecontent.entity.PageSection;
 
 public final class PageSectionMapper {

@@ -1,6 +1,7 @@
 package com.mhconsultingbe.consultation.controller;
 
-import com.mhconsultingbe.consultation.dto.*;
+import com.mhconsultingbe.consultation.dto.request.ConsultationStatusRequest;
+import com.mhconsultingbe.consultation.dto.response.ConsultationResponse;
 import com.mhconsultingbe.consultation.entity.ConsultationStatus;
 import com.mhconsultingbe.consultation.service.ConsultationService;
 import jakarta.validation.Valid;

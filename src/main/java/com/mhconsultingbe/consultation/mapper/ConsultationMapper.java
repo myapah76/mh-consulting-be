@@ -1,6 +1,6 @@
 package com.mhconsultingbe.consultation.mapper;
 
-import com.mhconsultingbe.consultation.dto.ConsultationResponse;
+import com.mhconsultingbe.consultation.dto.response.ConsultationResponse;
 import com.mhconsultingbe.consultation.entity.ConsultationRequest;
 
 public final class ConsultationMapper {

@@ -1,8 +1,8 @@
 package com.mhconsultingbe.servicecatalog.service;
 
-import com.mhconsultingbe.servicecatalog.dto.AdminServiceCategoryResponse;
-import com.mhconsultingbe.servicecatalog.dto.ServiceCategoryDeleteResponse;
-import com.mhconsultingbe.servicecatalog.dto.ServiceCategoryUpsertRequest;
+import com.mhconsultingbe.servicecatalog.dto.request.ServiceCategoryUpsertRequest;
+import com.mhconsultingbe.servicecatalog.dto.response.AdminServiceCategoryResponse;
+import com.mhconsultingbe.servicecatalog.dto.response.ServiceCategoryDeleteResponse;
 import org.springframework.data.domain.Page;
 
 import java.util.UUID;

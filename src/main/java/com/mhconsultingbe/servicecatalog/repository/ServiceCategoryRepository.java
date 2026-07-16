@@ -17,5 +17,5 @@ public interface ServiceCategoryRepository extends JpaRepository<ServiceCategory
 
     boolean existsBySlugAndIdNot(String slug, UUID id);
 
-    List<ServiceCategory> findAllByActiveTrueOrderByDisplayOrderAscNameAsc();
+    List<ServiceCategory> findAllByActiveTrueOrderByNameAscIdAsc();
 }

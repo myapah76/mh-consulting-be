@@ -1,4 +1,4 @@
-package com.mhconsultingbe.servicecatalog.dto;
+package com.mhconsultingbe.servicecatalog.dto.response;
 
 import java.util.UUID;
 
@@ -11,7 +11,6 @@ public record ServiceSummaryResponse(
         String categoryName,
         String shortDesc,
         String icon,
-        boolean active,
-        int displayOrder
+        boolean active
 ) {
 }

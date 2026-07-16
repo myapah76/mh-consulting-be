@@ -1,6 +1,6 @@
 package com.mhconsultingbe.contact.mapper;
 
-import com.mhconsultingbe.contact.dto.ContactSettingsResponse;
+import com.mhconsultingbe.contact.dto.response.ContactSettingsResponse;
 import com.mhconsultingbe.contact.entity.ContactSettings;
 
 public final class ContactSettingsMapper {

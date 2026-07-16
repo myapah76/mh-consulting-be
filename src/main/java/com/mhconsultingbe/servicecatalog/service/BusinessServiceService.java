@@ -1,9 +1,9 @@
 package com.mhconsultingbe.servicecatalog.service;
 
 import com.mhconsultingbe.consultation.service.ConsultationReferenceQuery;
-import com.mhconsultingbe.servicecatalog.dto.ServiceResponse;
-import com.mhconsultingbe.servicecatalog.dto.ServiceSummaryResponse;
-import com.mhconsultingbe.servicecatalog.dto.ServiceUpsertRequest;
+import com.mhconsultingbe.servicecatalog.dto.request.ServiceUpsertRequest;
+import com.mhconsultingbe.servicecatalog.dto.response.ServiceResponse;
+import com.mhconsultingbe.servicecatalog.dto.response.ServiceSummaryResponse;
 import com.mhconsultingbe.servicecatalog.entity.BusinessService;
 import com.mhconsultingbe.servicecatalog.entity.ServiceBenefit;
 import com.mhconsultingbe.servicecatalog.entity.ServiceCategory;
@@ -39,7 +39,6 @@ public class BusinessServiceService implements BusinessServiceOperations, Servic
             "slug",
             "category.slug",
             "active",
-            "displayOrder",
             "createdAt",
             "updatedAt"
     );
@@ -87,8 +86,8 @@ public class BusinessServiceService implements BusinessServiceOperations, Servic
                 sorting,
                 SORT_FIELDS,
                 Sort.by(
-                        Sort.Order.asc("displayOrder"),
-                        Sort.Order.asc("title")
+                        Sort.Order.asc("title"),
+                        Sort.Order.asc("id")
                 )
         );
 
@@ -189,7 +188,6 @@ public class BusinessServiceService implements BusinessServiceOperations, Servic
         } else if (creating) {
             target.setActive(true);
         }
-        target.setDisplayOrder(body.displayOrder() == null ? 0 : body.displayOrder());
         replace(target.getDetailedPoints(), body.detailedPoints(), ServiceDetailPoint::new);
         replace(target.getBenefits(), body.benefits(), ServiceBenefit::new);
         replace(target.getProcessSteps(), body.processSteps(), ServiceProcessStep::new);

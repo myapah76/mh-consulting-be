@@ -1,9 +1,9 @@
 package com.mhconsultingbe.servicecatalog.service;
 
-import com.mhconsultingbe.servicecatalog.dto.AdminServiceCategoryResponse;
-import com.mhconsultingbe.servicecatalog.dto.ServiceCategoryDeleteResponse;
-import com.mhconsultingbe.servicecatalog.dto.ServiceCategoryResponse;
-import com.mhconsultingbe.servicecatalog.dto.ServiceCategoryUpsertRequest;
+import com.mhconsultingbe.servicecatalog.dto.request.ServiceCategoryUpsertRequest;
+import com.mhconsultingbe.servicecatalog.dto.response.AdminServiceCategoryResponse;
+import com.mhconsultingbe.servicecatalog.dto.response.ServiceCategoryDeleteResponse;
+import com.mhconsultingbe.servicecatalog.dto.response.ServiceCategoryResponse;
 import com.mhconsultingbe.servicecatalog.entity.ServiceCategory;
 import com.mhconsultingbe.servicecatalog.repository.BusinessServiceRepository;
 import com.mhconsultingbe.servicecatalog.repository.ServiceCategoryRepository;
@@ -29,7 +29,6 @@ public class ServiceCategoryService implements ServiceCategoryQuery, ServiceCate
             "name",
             "slug",
             "active",
-            "displayOrder",
             "createdAt",
             "updatedAt"
     );
@@ -40,13 +39,12 @@ public class ServiceCategoryService implements ServiceCategoryQuery, ServiceCate
     @Override
     @Transactional(readOnly = true)
     public List<ServiceCategoryResponse> listActive() {
-        return repository.findAllByActiveTrueOrderByDisplayOrderAscNameAsc().stream()
+        return repository.findAllByActiveTrueOrderByNameAscIdAsc().stream()
                 .map(category -> new ServiceCategoryResponse(
                         category.getId(),
                         category.getSlug(),
                         category.getName(),
-                        category.isActive(),
-                        category.getDisplayOrder()
+                        category.isActive()
                 ))
                 .toList();
     }
@@ -71,8 +69,8 @@ public class ServiceCategoryService implements ServiceCategoryQuery, ServiceCate
                 sorting,
                 SORT_FIELDS,
                 Sort.by(
-                        Sort.Order.asc("displayOrder"),
-                        Sort.Order.asc("name")
+                        Sort.Order.asc("name"),
+                        Sort.Order.asc("id")
                 )
         );
         return repository.findAll(specification, pageable).map(this::adminResponse);
@@ -149,7 +147,6 @@ public class ServiceCategoryService implements ServiceCategoryQuery, ServiceCate
         } else if (creating) {
             category.setActive(true);
         }
-        category.setDisplayOrder(request.displayOrder() == null ? 0 : request.displayOrder());
     }
 
     private AdminServiceCategoryResponse adminResponse(ServiceCategory category) {
@@ -158,7 +155,6 @@ public class ServiceCategoryService implements ServiceCategoryQuery, ServiceCate
                 category.getSlug(),
                 category.getName(),
                 category.isActive(),
-                category.getDisplayOrder(),
                 category.getCreatedAt(),
                 category.getUpdatedAt()
         );

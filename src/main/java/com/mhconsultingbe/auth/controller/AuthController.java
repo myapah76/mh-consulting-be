@@ -1,8 +1,8 @@
 package com.mhconsultingbe.auth.controller;
 
-import com.mhconsultingbe.auth.dto.AdminResponse;
-import com.mhconsultingbe.auth.dto.CsrfResponse;
-import com.mhconsultingbe.auth.dto.LoginRequest;
+import com.mhconsultingbe.auth.dto.request.LoginRequest;
+import com.mhconsultingbe.auth.dto.response.AdminResponse;
+import com.mhconsultingbe.auth.dto.response.CsrfResponse;
 import com.mhconsultingbe.auth.repository.AdminRepository;
 import com.mhconsultingbe.shared.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;

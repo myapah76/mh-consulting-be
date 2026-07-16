@@ -1,7 +1,7 @@
 package com.mhconsultingbe.servicecatalog.service;
 
 import com.mhconsultingbe.consultation.service.ConsultationReferenceQuery;
-import com.mhconsultingbe.servicecatalog.dto.ServiceUpsertRequest;
+import com.mhconsultingbe.servicecatalog.dto.request.ServiceUpsertRequest;
 import com.mhconsultingbe.servicecatalog.entity.BusinessService;
 import com.mhconsultingbe.servicecatalog.entity.ServiceCategory;
 import com.mhconsultingbe.servicecatalog.repository.BusinessServiceRepository;
@@ -9,6 +9,10 @@ import com.mhconsultingbe.servicecatalog.repository.ServiceCategoryRepository;
 import com.mhconsultingbe.shared.exception.InvalidRequestException;
 import com.mhconsultingbe.shared.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
@@ -72,6 +76,29 @@ class BusinessServiceServiceTests {
         assertEquals("Kế toán", result.orElseThrow().categoryName());
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    void listsServicesWithStableTitleAndIdDefaultSorting() {
+        when(repository.findAll(any(Specification.class), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of()));
+
+        service.list(null, null, 0, 20, null);
+
+        ArgumentCaptor<Pageable> pageable = ArgumentCaptor.forClass(Pageable.class);
+        verify(repository).findAll(any(Specification.class), pageable.capture());
+        assertEquals("title: ASC,id: ASC", pageable.getValue().getSort().toString());
+    }
+
+    @Test
+    void rejectsRemovedDisplayOrderSortField() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.list(null, null, 0, 20, "displayOrder,asc")
+        );
+
+        verify(repository, never()).findAll(any(Specification.class), any(Pageable.class));
+    }
+
     private ServiceUpsertRequest request(UUID categoryId) {
         return new ServiceUpsertRequest(
                 "service-slug",
@@ -81,7 +108,6 @@ class BusinessServiceServiceTests {
                 null,
                 null,
                 true,
-                0,
                 List.of(),
                 List.of(),
                 List.of()

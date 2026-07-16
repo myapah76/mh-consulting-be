@@ -1,6 +1,6 @@
 package com.mhconsultingbe.consultation.service;
 
-import com.mhconsultingbe.consultation.dto.ConsultationCreateRequest;
+import com.mhconsultingbe.consultation.dto.request.ConsultationCreateRequest;
 import com.mhconsultingbe.consultation.entity.ConsultationRequest;
 import com.mhconsultingbe.consultation.mail.ConsultationSubmittedEvent;
 import com.mhconsultingbe.consultation.repository.ConsultationRequestRepository;

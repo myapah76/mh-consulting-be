@@ -1,6 +1,6 @@
 package com.mhconsultingbe.pagecontent.controller;
 
-import com.mhconsultingbe.pagecontent.dto.PageSectionResponse;
+import com.mhconsultingbe.pagecontent.dto.response.PageSectionResponse;
 import com.mhconsultingbe.pagecontent.service.PageContentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

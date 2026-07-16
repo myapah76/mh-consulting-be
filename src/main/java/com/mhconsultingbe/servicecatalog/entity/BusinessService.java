@@ -54,9 +54,6 @@ public class BusinessService {
     @Column(nullable = false)
     private boolean active = true;
 
-    @Column(name = "display_order", nullable = false)
-    private int displayOrder;
-
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 

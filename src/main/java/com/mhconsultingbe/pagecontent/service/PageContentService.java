@@ -1,6 +1,7 @@
 package com.mhconsultingbe.pagecontent.service;
 
-import com.mhconsultingbe.pagecontent.dto.*;
+import com.mhconsultingbe.pagecontent.dto.request.PageSectionRequest;
+import com.mhconsultingbe.pagecontent.dto.response.PageSectionResponse;
 import com.mhconsultingbe.pagecontent.entity.PageSection;
 import com.mhconsultingbe.pagecontent.mapper.PageSectionMapper;
 import com.mhconsultingbe.pagecontent.repository.PageSectionRepository;

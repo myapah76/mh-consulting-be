@@ -1,4 +1,4 @@
-package com.mhconsultingbe.consultation.dto;
+package com.mhconsultingbe.consultation.dto.request;
 
 import jakarta.validation.Validation;
 import org.junit.jupiter.api.Test;
