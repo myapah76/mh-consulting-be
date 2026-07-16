@@ -1,23 +1,42 @@
 package com.mhconsultingbe.servicecatalog.service;
 
+import com.mhconsultingbe.servicecatalog.dto.ServiceCategoryUpsertRequest;
 import com.mhconsultingbe.servicecatalog.entity.ServiceCategory;
+import com.mhconsultingbe.servicecatalog.repository.BusinessServiceRepository;
 import com.mhconsultingbe.servicecatalog.repository.ServiceCategoryRepository;
+import com.mhconsultingbe.shared.exception.ConflictException;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class ServiceCategoryServiceTests {
     private final ServiceCategoryRepository repository = mock(ServiceCategoryRepository.class);
-    private final ServiceCategoryService service = new ServiceCategoryService(repository);
+    private final BusinessServiceRepository businessServiceRepository = mock(BusinessServiceRepository.class);
+    private final ServiceCategoryService service = new ServiceCategoryService(
+            repository,
+            businessServiceRepository
+    );
 
     @Test
-    void returnsRepositoryOrderedActiveCategoriesAsResponses() {
-        ServiceCategory first = category("thanh-lap", "Thành lập doanh nghiệp", 0);
-        ServiceCategory second = category("ke-toan", "Kế toán", 1);
+    void returnsRepositoryOrderedActiveCategoriesAsPublicResponses() {
+        ServiceCategory first = category("thanh-lap", "Thành lập doanh nghiệp", 0, true);
+        ServiceCategory second = category("ke-toan", "Kế toán", 1, true);
         when(repository.findAllByActiveTrueOrderByDisplayOrderAscNameAsc())
                 .thenReturn(List.of(first, second));
 
@@ -25,15 +44,164 @@ class ServiceCategoryServiceTests {
 
         assertEquals(List.of("thanh-lap", "ke-toan"),
                 result.stream().map(response -> response.slug()).toList());
-        assertEquals(List.of("Thành lập doanh nghiệp", "Kế toán"),
-                result.stream().map(response -> response.name()).toList());
+        verify(repository).findAllByActiveTrueOrderByDisplayOrderAscNameAsc();
     }
 
-    private ServiceCategory category(String slug, String name, int displayOrder) {
+    @Test
+    @SuppressWarnings("unchecked")
+    void listsActiveAndInactiveWithDefaultSortingAndClampedSize() {
+        when(repository.findAll(any(Specification.class), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(
+                        category("active", "Active", 0, true),
+                        category("inactive", "Inactive", 1, false)
+                )));
+
+        var result = service.list(null, 0, 1000, null);
+
+        assertEquals(2, result.getTotalElements());
+        ArgumentCaptor<Pageable> pageable = ArgumentCaptor.forClass(Pageable.class);
+        verify(repository).findAll(any(Specification.class), pageable.capture());
+        assertEquals(100, pageable.getValue().getPageSize());
+        assertEquals("displayOrder: ASC,name: ASC", pageable.getValue().getSort().toString());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void appliesActiveFilter() {
+        when(repository.findAll(any(Specification.class), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(category("active", "Active", 0, true))));
+
+        var result = service.list(true, 0, 20, "name,desc");
+
+        assertEquals(1, result.getTotalElements());
+        ArgumentCaptor<Pageable> pageable = ArgumentCaptor.forClass(Pageable.class);
+        verify(repository).findAll(any(Specification.class), pageable.capture());
+        assertEquals("name: DESC", pageable.getValue().getSort().toString());
+    }
+
+    @Test
+    void getsInactiveCategoryById() {
+        ServiceCategory category = category("inactive", "Inactive", 0, false);
+        when(repository.findById(category.getId())).thenReturn(Optional.of(category));
+
+        assertFalse(service.getById(category.getId()).active());
+    }
+
+    @Test
+    void createsTrimmedCategoryWithDefaults() {
+        when(repository.save(any(ServiceCategory.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        var result = service.create(request("new-category", "  New category  ", null, null));
+
+        assertEquals("new-category", result.slug());
+        assertEquals("New category", result.name());
+        assertTrue(result.active());
+        assertEquals(0, result.displayOrder());
+    }
+
+    @Test
+    void rejectsDuplicateSlugOnCreate() {
+        when(repository.existsBySlug("duplicate")).thenReturn(true);
+
+        ConflictException exception = assertThrows(
+                ConflictException.class,
+                () -> service.create(request("duplicate", "Duplicate", true, 0))
+        );
+
+        assertEquals("DUPLICATE_SLUG", exception.getCode());
+        verify(repository, never()).save(any());
+    }
+
+    @Test
+    void fullyUpdatesCategory() {
+        ServiceCategory category = category("old", "Old", 1, true);
+        when(repository.findById(category.getId())).thenReturn(Optional.of(category));
+
+        var result = service.update(
+                category.getId(),
+                request("updated", "Updated", false, 7)
+        );
+
+        assertEquals("updated", result.slug());
+        assertEquals("Updated", result.name());
+        assertFalse(result.active());
+        assertEquals(7, result.displayOrder());
+    }
+
+    @Test
+    void rejectsDuplicateSlugOnUpdateExcludingCurrentId() {
+        ServiceCategory category = category("old", "Old", 1, true);
+        when(repository.findById(category.getId())).thenReturn(Optional.of(category));
+        when(repository.existsBySlugAndIdNot("duplicate", category.getId())).thenReturn(true);
+
+        ConflictException exception = assertThrows(
+                ConflictException.class,
+                () -> service.update(
+                        category.getId(),
+                        request("duplicate", "Updated", true, 0)
+                )
+        );
+
+        assertEquals("DUPLICATE_SLUG", exception.getCode());
+    }
+
+    @Test
+    void activatesAndDeactivatesCategory() {
+        ServiceCategory category = category("category", "Category", 0, false);
+        when(repository.findById(category.getId())).thenReturn(Optional.of(category));
+
+        assertTrue(service.updateActive(category.getId(), true).active());
+        assertFalse(service.updateActive(category.getId(), false).active());
+    }
+
+    @Test
+    void deletesUnusedCategory() {
+        ServiceCategory category = category("unused", "Unused", 0, true);
+        when(repository.findById(category.getId())).thenReturn(Optional.of(category));
+
+        var result = service.delete(category.getId());
+
+        assertTrue(result.deleted());
+        verify(repository).delete(category);
+    }
+
+    @Test
+    void deactivatesReferencedCategoryWithoutDeletingServices() {
+        ServiceCategory category = category("referenced", "Referenced", 0, true);
+        when(repository.findById(category.getId())).thenReturn(Optional.of(category));
+        when(businessServiceRepository.existsByCategoryId(category.getId())).thenReturn(true);
+
+        var result = service.delete(category.getId());
+
+        assertFalse(result.deleted());
+        assertFalse(category.isActive());
+        assertEquals("Referenced category was deactivated", result.message());
+        verify(repository, never()).delete(any(ServiceCategory.class));
+        verify(businessServiceRepository, never()).deleteAll();
+    }
+
+    private ServiceCategoryUpsertRequest request(
+            String slug,
+            String name,
+            Boolean active,
+            Integer displayOrder
+    ) {
+        return new ServiceCategoryUpsertRequest(slug, name, active, displayOrder);
+    }
+
+    private ServiceCategory category(
+            String slug,
+            String name,
+            int displayOrder,
+            boolean active
+    ) {
         ServiceCategory category = new ServiceCategory();
+        category.setId(UUID.randomUUID());
         category.setSlug(slug);
         category.setName(name);
         category.setDisplayOrder(displayOrder);
+        category.setActive(active);
         return category;
     }
 }

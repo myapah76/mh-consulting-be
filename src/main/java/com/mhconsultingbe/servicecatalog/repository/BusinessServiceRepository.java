@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface BusinessServiceRepository extends JpaRepository<BusinessService, UUID>, JpaSpecificationExecutor<BusinessService> {
+    boolean existsByCategoryId(UUID categoryId);
+
     boolean existsBySlugIgnoreCase(String slug);
     boolean existsBySlugIgnoreCaseAndIdNot(String slug, UUID id);
     Optional<BusinessService> findBySlugAndActiveTrue(String slug);
