@@ -26,29 +26,89 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http,
-                                            @Qualifier("corsConfigurationSource") CorsConfigurationSource cors) throws Exception {
-        var csrf = CookieCsrfTokenRepository.withHttpOnlyFalse();
-        csrf.setCookiePath("/");
-        http
-                .cors(c -> c.configurationSource(cors))
-                .csrf(c -> c
-                        .csrfTokenRepository(csrf)
-                        .ignoringRequestMatchers("/api/public/consultations"))
+    SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            @Qualifier("corsConfigurationSource")
+            CorsConfigurationSource cors,
+            @Value("${SESSION_COOKIE_SECURE:false}")
+            boolean cookieSecure,
+            @Value("${SESSION_COOKIE_SAME_SITE:Lax}")
+            String cookieSameSite
+    ) throws Exception {
+        var csrf =
+                CookieCsrfTokenRepository.withHttpOnlyFalse();
 
+        csrf.setCookieCustomizer(cookie -> cookie
+                .path("/")
+                .secure(cookieSecure)
+                .sameSite(cookieSameSite)
+        );
+
+        http
+                .cors(corsConfig ->
+                        corsConfig.configurationSource(cors)
+                )
+                .csrf(csrfConfig -> csrfConfig
+                        .csrfTokenRepository(csrf)
+                        .ignoringRequestMatchers(
+                                "/api/public/consultations"
+                        )
+                )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/actuator/health/**", "/error", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/auth/csrf").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/logout").permitAll()
-                        .requestMatchers("/api/public/**").permitAll()
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated())
+                        .requestMatchers(
+                                "/actuator/health/**",
+                                "/error",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        )
+                        .permitAll()
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/auth/csrf"
+                        )
+                        .permitAll()
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/auth/login",
+                                "/api/auth/logout"
+                        )
+                        .permitAll()
+                        .requestMatchers("/api/public/**")
+                        .permitAll()
+                        .requestMatchers("/api/admin/**")
+                        .hasRole("ADMIN")
+                        .anyRequest()
+                        .authenticated()
+                )
                 .requestCache(cache -> cache.disable())
-                .securityContext(context -> context.requireExplicitSave(true))
+                .securityContext(context ->
+                        context.requireExplicitSave(true)
+                )
                 .exceptionHandling(errors -> errors
-                        .authenticationEntryPoint((req, res, ex) -> writeSecurityError(res, 401, "AUTHENTICATION_REQUIRED", "Authentication is required", req.getRequestURI()))
-                        .accessDeniedHandler((req, res, ex) -> writeSecurityError(res, 403, "ACCESS_DENIED", "You do not have permission to perform this action", req.getRequestURI())))
+                        .authenticationEntryPoint(
+                                (request, response, exception) ->
+                                        writeSecurityError(
+                                                response,
+                                                401,
+                                                "AUTHENTICATION_REQUIRED",
+                                                "Authentication is required",
+                                                request.getRequestURI()
+                                        )
+                        )
+                        .accessDeniedHandler(
+                                (request, response, exception) ->
+                                        writeSecurityError(
+                                                response,
+                                                403,
+                                                "ACCESS_DENIED",
+                                                "You do not have permission to perform this action",
+                                                request.getRequestURI()
+                                        )
+                        )
+                )
                 .logout(logout -> logout.disable());
+
         return http.build();
     }
 
