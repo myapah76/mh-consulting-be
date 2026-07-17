@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,4 +19,7 @@ public interface BusinessServiceRepository extends JpaRepository<BusinessService
 
     @EntityGraph(attributePaths = "category")
     Optional<BusinessService> findByIdAndActiveTrue(UUID id);
+
+    @EntityGraph(attributePaths = "category")
+    List<BusinessService> findAllByIdIn(Collection<UUID> ids);
 }
