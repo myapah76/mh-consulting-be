@@ -11,22 +11,38 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service @RequiredArgsConstructor
-public class ContactSettingsService {
+@Service
+@RequiredArgsConstructor
+public class ContactSettingsService implements ContactSettingsOperations {
     private final ContactSettingsRepository repository;
+
+    @Override
     @Transactional(readOnly = true)
-    public ContactSettingsResponse get() { return ContactSettingsMapper.response(required()); }
-    @Transactional
-    public ContactSettingsResponse update(ContactSettingsRequest b) {
-        var s = repository.findBySingletonKeyTrue().orElseGet(ContactSettings::new);
-        s.setCompanyName(TextNormalizer.plainText(b.companyName())); s.setTagline(TextNormalizer.plainText(b.tagline()));
-        s.setPrimaryPhone(TextNormalizer.trimToNull(b.primaryPhone())); s.setHotline1(TextNormalizer.trimToNull(b.hotline1()));
-        s.setHotline2(TextNormalizer.trimToNull(b.hotline2())); s.setHotline3(TextNormalizer.trimToNull(b.hotline3()));
-        s.setEmail(TextNormalizer.lowercase(b.email())); s.setAddress(TextNormalizer.plainText(b.address()));
-        s.setZaloUrl(TextNormalizer.trimToNull(b.zaloUrl())); s.setFacebookUrl(TextNormalizer.trimToNull(b.facebookUrl()));
-        s.setGoogleMapsUrl(TextNormalizer.trimToNull(b.googleMapsUrl()));
-        s.setBusinessRegistrationText(TextNormalizer.plainText(b.businessRegistrationText()));
-        return ContactSettingsMapper.response(repository.save(s));
+    public ContactSettingsResponse get() {
+        return ContactSettingsMapper.response(required());
     }
-    private ContactSettings required() { return repository.findBySingletonKeyTrue().orElseThrow(() -> new ResourceNotFoundException("Contact settings not configured")); }
+
+    @Override
+    @Transactional
+    public ContactSettingsResponse update(ContactSettingsRequest request) {
+        ContactSettings settings = required();
+        settings.setAddress(TextNormalizer.plainText(request.address()));
+        settings.setPrimaryPhone(TextNormalizer.trimToNull(request.primaryPhone()));
+        settings.setPrimaryPhoneLabel(TextNormalizer.plainText(request.primaryPhoneLabel()));
+        settings.setSecondaryPhone(TextNormalizer.trimToNull(request.secondaryPhone()));
+        settings.setSecondaryPhoneLabel(settings.getSecondaryPhone() == null
+                ? null
+                : TextNormalizer.plainText(request.secondaryPhoneLabel()));
+        settings.setEmail(TextNormalizer.lowercase(request.email()));
+        settings.setWorkingHours(TextNormalizer.plainText(request.workingHours()));
+        settings.setFacebookUrl(TextNormalizer.trimToNull(request.facebookUrl()));
+        settings.setZaloUrl(TextNormalizer.trimToNull(request.zaloUrl()));
+        settings.setYoutubeUrl(TextNormalizer.trimToNull(request.youtubeUrl()));
+        return ContactSettingsMapper.response(repository.save(settings));
+    }
+
+    private ContactSettings required() {
+        return repository.findBySingletonKeyTrue()
+                .orElseThrow(() -> new ResourceNotFoundException("Contact settings not configured"));
+    }
 }
