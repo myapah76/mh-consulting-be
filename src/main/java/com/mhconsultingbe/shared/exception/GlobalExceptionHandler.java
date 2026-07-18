@@ -1,5 +1,7 @@
 package com.mhconsultingbe.shared.exception;
 
+import com.mhconsultingbe.emailsettings.exception.EmailDeliveryFailedException;
+import com.mhconsultingbe.emailsettings.exception.EmailDeliveryUnavailableException;
 import com.mhconsultingbe.shared.response.ApiError;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -55,6 +57,34 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConflictException.class)
     ResponseEntity<ApiError> conflict(ConflictException exception, HttpServletRequest request) {
         return error(HttpStatus.CONFLICT, exception.getCode(), exception.getMessage(), Map.of(), request);
+    }
+
+    @ExceptionHandler(EmailDeliveryUnavailableException.class)
+    ResponseEntity<ApiError> emailUnavailable(
+            EmailDeliveryUnavailableException exception,
+            HttpServletRequest request
+    ) {
+        return error(
+                HttpStatus.SERVICE_UNAVAILABLE,
+                "EMAIL_DELIVERY_UNAVAILABLE",
+                exception.getMessage(),
+                Map.of(),
+                request
+        );
+    }
+
+    @ExceptionHandler(EmailDeliveryFailedException.class)
+    ResponseEntity<ApiError> emailFailed(
+            EmailDeliveryFailedException exception,
+            HttpServletRequest request
+    ) {
+        return error(
+                HttpStatus.BAD_GATEWAY,
+                "EMAIL_DELIVERY_FAILED",
+                exception.getMessage(),
+                Map.of(),
+                request
+        );
     }
 
     @ExceptionHandler(BadCredentialsException.class)

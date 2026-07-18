@@ -1,10 +1,10 @@
 package com.mhconsultingbe.consultation.mail;
 
+import com.mhconsultingbe.emailsettings.service.EmailSettingsQuery;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -27,19 +27,20 @@ public class ConsultationMailService {
 
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
-
-    @Value("${app.mail.from-email}")
-    private String from;
-
-    @Value("${app.mail.from-name}")
-    private String fromName;
-
-    @Value("${app.mail.consultation-recipient-email}")
-    private String recipient;
+    private final EmailSettingsQuery emailSettingsQuery;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void notifyCompany(ConsultationSubmittedEvent event) {
         try {
+            EmailSettingsQuery.CurrentEmailSettings settings = emailSettingsQuery.current();
+            if (!settings.enabled()) {
+                log.info(
+                        "Consultation email delivery is disabled; notification skipped for request {}",
+                        event.id()
+                );
+                return;
+            }
+
             var context = new Context(Locale.forLanguageTag("vi-VN"));
             context.setVariable("request", event);
             context.setVariable(
@@ -61,8 +62,8 @@ public class ConsultationMailService {
                     StandardCharsets.UTF_8.name()
             );
 
-            helper.setFrom(from, fromName);
-            helper.setTo(recipient);
+            helper.setFrom(settings.fromEmail(), settings.fromName());
+            helper.setTo(settings.consultationRecipientEmail());
 
             if (event.email() != null && !event.email().isBlank()) {
                 helper.setReplyTo(event.email());
@@ -76,9 +77,9 @@ public class ConsultationMailService {
             mailSender.send(message);
         } catch (Exception exception) {
             log.error(
-                    "Failed to send consultation notification for request {}",
+                    "Failed to send consultation notification for request {} with {}",
                     event.id(),
-                    exception
+                    exception.getClass().getSimpleName()
             );
         }
     }
