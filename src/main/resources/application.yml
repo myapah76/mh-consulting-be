@@ -84,6 +84,7 @@ springdoc:
 
 app:
   frontend-url: ${FRONTEND_URL:http://localhost:3000}
+  password-reset-url: ${PASSWORD_RESET_URL:${FRONTEND_URL:http://localhost:3000}/admin/reset-password}
   admin:
     email: ${ADMIN_EMAIL:}
     password: ${ADMIN_PASSWORD:}

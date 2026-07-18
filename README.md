@@ -39,6 +39,12 @@ All frontend requests should use `credentials: 'include'`.
 
 The session identifier is stored in the HttpOnly `MHCONSULTING_SESSION` cookie. Configure `FRONTEND_URL` as a comma-separated allow-list if more than one SPA origin is used. In production use HTTPS and `SESSION_COOKIE_SECURE=true`.
 
+## Administrator password reset
+
+The anonymous password-reset endpoints remain CSRF-protected and use `PASSWORD_RESET_URL` to build the link sent by email. For production, configure it as the exact frontend page, for example `https://mh-consulting-five.vercel.app/admin/reset-password`. Reset tokens expire after 30 minutes, are single-use, and only their SHA-256 hashes are stored.
+
+Changing or resetting a password does not invalidate existing authenticated sessions because this project currently uses container-managed HTTP sessions without a global session registry. Existing sessions remain valid until logout or expiry. If global revocation becomes required, add a session-version check or Spring Session-backed session management as a separate, complete change.
+
 ## Frontend-compatible API contract
 
 - Public service responses retain `id`, `slug`, `title`, `category`, `shortDesc`, `icon`, `fullContent`, `detailedPoints`, `benefits`, and `processSteps`.

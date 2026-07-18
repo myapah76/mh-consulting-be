@@ -73,7 +73,10 @@ public class SecurityConfig {
                         .requestMatchers(
                                 HttpMethod.POST,
                                 "/api/auth/login",
-                                "/api/auth/logout"
+                                "/api/auth/logout",
+                                "/api/auth/forgot-password",
+                                "/api/auth/reset-password/validate",
+                                "/api/auth/reset-password"
                         )
                         .permitAll()
                         .requestMatchers("/api/public/**")
