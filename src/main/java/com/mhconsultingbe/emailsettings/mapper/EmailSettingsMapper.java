@@ -11,7 +11,9 @@ public final class EmailSettingsMapper {
 
     public static EmailSettingsResponse response(
             EmailSettings settings,
-            boolean providerConfigured
+            boolean providerConfigured,
+            String smtpUsername,
+            boolean smtpPasswordConfigured
     ) {
         return new EmailSettingsResponse(
                 settings.isEnabled(),
@@ -19,7 +21,9 @@ public final class EmailSettingsMapper {
                 settings.getFromName(),
                 settings.getConsultationRecipientEmail(),
                 DELIVERY_PROVIDER,
-                providerConfigured
+                providerConfigured,
+                smtpUsername,
+                smtpPasswordConfigured
         );
     }
 }

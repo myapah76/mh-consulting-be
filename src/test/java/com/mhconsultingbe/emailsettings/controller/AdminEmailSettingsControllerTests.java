@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(
@@ -35,7 +36,9 @@ class AdminEmailSettingsControllerTests {
               "enabled": true,
               "fromEmail": "info@mhconsulting.vn",
               "fromName": "MH Consulting",
-              "consultationRecipientEmail": "myapah7605@gmail.com"
+              "consultationRecipientEmail": "myapah7605@gmail.com",
+              "smtpUsername": "myapah7605@gmail.com",
+              "smtpPassword": "new-app-password"
             }
             """;
 
@@ -58,9 +61,12 @@ class AdminEmailSettingsControllerTests {
                 .andExpect(jsonPath("$.consultationRecipientEmail").value("myapah7605@gmail.com"))
                 .andExpect(jsonPath("$.deliveryProvider").value("SMTP"))
                 .andExpect(jsonPath("$.providerConfigured").value(true))
-                .andExpect(jsonPath("$.password").doesNotExist())
-                .andExpect(jsonPath("$.username").doesNotExist())
-                .andExpect(jsonPath("$.host").doesNotExist());
+                .andExpect(jsonPath("$.smtpUsername").value("myapah7605@gmail.com"))
+                .andExpect(jsonPath("$.smtpPasswordConfigured").value(true))
+                .andExpect(jsonPath("$.smtpPassword").doesNotExist())
+                .andExpect(jsonPath("$.smtpPasswordEncrypted").doesNotExist())
+                .andExpect(jsonPath("$.host").doesNotExist())
+                .andExpect(header().string("Cache-Control", "no-store"));
     }
 
     @Test
@@ -74,7 +80,9 @@ class AdminEmailSettingsControllerTests {
                         .contentType("application/json")
                         .content(UPDATE_REQUEST))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.deliveryProvider").value("SMTP"));
+                .andExpect(jsonPath("$.deliveryProvider").value("SMTP"))
+                .andExpect(jsonPath("$.smtpPassword").doesNotExist())
+                .andExpect(jsonPath("$.smtpPasswordEncrypted").doesNotExist());
     }
 
     @Test
@@ -102,14 +110,16 @@ class AdminEmailSettingsControllerTests {
                                   "enabled": null,
                                   "fromEmail": "invalid",
                                   "fromName": " ",
-                                  "consultationRecipientEmail": "invalid"
+                                  "consultationRecipientEmail": "invalid",
+                                  "smtpUsername": "invalid"
                                 }
                                 """))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.fieldErrors.enabled").exists())
                 .andExpect(jsonPath("$.fieldErrors.fromEmail").exists())
                 .andExpect(jsonPath("$.fieldErrors.fromName").exists())
-                .andExpect(jsonPath("$.fieldErrors.consultationRecipientEmail").exists());
+                .andExpect(jsonPath("$.fieldErrors.consultationRecipientEmail").exists())
+                .andExpect(jsonPath("$.fieldErrors.smtpUsername").exists());
 
         mockMvc.perform(post("/api/admin/email-settings/test")
                         .with(user("admin@example.com").roles("ADMIN"))
@@ -168,6 +178,8 @@ class AdminEmailSettingsControllerTests {
                 "MH Consulting",
                 "myapah7605@gmail.com",
                 "SMTP",
+                true,
+                "myapah7605@gmail.com",
                 true
         );
     }

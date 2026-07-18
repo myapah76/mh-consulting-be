@@ -17,24 +17,6 @@ spring:
           time_zone: UTC
   flyway:
     enabled: true
-  mail:
-    host: ${SMTP_HOST:}
-    port: ${SMTP_PORT:587}
-    username: ${SMTP_USERNAME:}
-    password: ${SMTP_PASSWORD:}
-    properties:
-      mail:
-        smtp:
-          auth: ${SMTP_AUTH:true}
-          starttls:
-            enable: ${SMTP_ENABLE_SSL:true}
-            required: ${SMTP_ENABLE_SSL:true}
-          ssl:
-            enable: ${SMTP_IMPLICIT_SSL:false}
-          connectiontimeout: 10000
-          timeout: 10000
-          writetimeout: 10000
-
   mvc:
     problemdetails:
       enabled: false
@@ -85,6 +67,19 @@ springdoc:
 app:
   frontend-url: ${FRONTEND_URL:http://localhost:3000}
   password-reset-url: ${PASSWORD_RESET_URL:${FRONTEND_URL:http://localhost:3000}/admin/reset-password}
+  mail:
+    credentials-encryption-key: ${EMAIL_CREDENTIALS_ENCRYPTION_KEY:}
+    smtp:
+      host: ${SMTP_HOST:}
+      port: ${SMTP_PORT:587}
+      environment-username: ${SMTP_USERNAME:}
+      environment-password: ${SMTP_PASSWORD:}
+      auth: ${SMTP_AUTH:true}
+      start-tls: ${SMTP_ENABLE_SSL:true}
+      implicit-ssl: ${SMTP_IMPLICIT_SSL:false}
+      connection-timeout: ${SMTP_CONNECTION_TIMEOUT:10000}
+      read-timeout: ${SMTP_READ_TIMEOUT:10000}
+      write-timeout: ${SMTP_WRITE_TIMEOUT:10000}
   admin:
     email: ${ADMIN_EMAIL:}
     password: ${ADMIN_PASSWORD:}

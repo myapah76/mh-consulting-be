@@ -1,6 +1,7 @@
 package com.mhconsultingbe.consultation.mail;
 
 import com.mhconsultingbe.emailsettings.service.EmailSettingsQuery;
+import com.mhconsultingbe.emailsettings.config.DynamicMailSenderFactory;
 import jakarta.mail.Message;
 import jakarta.mail.Session;
 import jakarta.mail.internet.InternetAddress;
@@ -26,13 +27,18 @@ import static org.mockito.Mockito.when;
 
 class ConsultationMailServiceTests {
     private final JavaMailSender mailSender = mock(JavaMailSender.class);
+    private final DynamicMailSenderFactory mailSenderFactory = mock(DynamicMailSenderFactory.class);
     private final TemplateEngine templateEngine = mock(TemplateEngine.class);
     private final EmailSettingsQuery settingsQuery = mock(EmailSettingsQuery.class);
     private final ConsultationMailService service = new ConsultationMailService(
-            mailSender,
+            mailSenderFactory,
             templateEngine,
             settingsQuery
     );
+
+    ConsultationMailServiceTests() {
+        when(mailSenderFactory.create()).thenReturn(mailSender);
+    }
 
     @Test
     void disabledSettingsSkipNotification() {
@@ -41,6 +47,7 @@ class ConsultationMailServiceTests {
         service.notifyCompany(event());
 
         verify(mailSender, never()).createMimeMessage();
+        verify(mailSenderFactory, never()).create();
         verify(mailSender, never()).send(any(MimeMessage.class));
     }
 
@@ -77,6 +84,7 @@ class ConsultationMailServiceTests {
         assertEquals("first@example.com", ((InternetAddress) first.getFrom()[0]).getAddress());
         assertEquals("second@example.com", ((InternetAddress) second.getFrom()[0]).getAddress());
         verify(settingsQuery, times(2)).current();
+        verify(mailSenderFactory, times(2)).create();
     }
 
     @Test

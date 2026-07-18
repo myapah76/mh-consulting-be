@@ -1,5 +1,6 @@
 package com.mhconsultingbe.auth.mail;
 
+import com.mhconsultingbe.emailsettings.config.DynamicMailSenderFactory;
 import com.mhconsultingbe.emailsettings.config.MailProviderConfiguration;
 import com.mhconsultingbe.emailsettings.service.EmailSettingsQuery;
 import jakarta.mail.internet.MimeMessage;
@@ -23,7 +24,7 @@ public class AdminPasswordResetMailService {
     private static final Logger log = LoggerFactory.getLogger(AdminPasswordResetMailService.class);
     private static final String SUBJECT = "MH Consulting - Đặt lại mật khẩu quản trị";
 
-    private final JavaMailSender mailSender;
+    private final DynamicMailSenderFactory mailSenderFactory;
     private final TemplateEngine templateEngine;
     private final EmailSettingsQuery emailSettingsQuery;
     private final MailProviderConfiguration providerConfiguration;
@@ -43,6 +44,7 @@ public class AdminPasswordResetMailService {
             context.setVariable("currentYear", Year.now(clock).getValue());
             String html = templateEngine.process("email/admin-password-reset", context);
 
+            JavaMailSender mailSender = mailSenderFactory.create();
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(
                     message,

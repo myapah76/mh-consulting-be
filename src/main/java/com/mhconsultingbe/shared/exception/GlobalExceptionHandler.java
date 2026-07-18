@@ -1,7 +1,9 @@
 package com.mhconsultingbe.shared.exception;
 
+import com.mhconsultingbe.emailsettings.exception.EmailCredentialConfigurationException;
 import com.mhconsultingbe.emailsettings.exception.EmailDeliveryFailedException;
 import com.mhconsultingbe.emailsettings.exception.EmailDeliveryUnavailableException;
+import com.mhconsultingbe.emailsettings.exception.EmailSettingsValidationException;
 import com.mhconsultingbe.shared.response.ApiError;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -67,6 +69,34 @@ public class GlobalExceptionHandler {
         return error(
                 HttpStatus.SERVICE_UNAVAILABLE,
                 "EMAIL_DELIVERY_UNAVAILABLE",
+                exception.getMessage(),
+                Map.of(),
+                request
+        );
+    }
+
+    @ExceptionHandler(EmailSettingsValidationException.class)
+    ResponseEntity<ApiError> emailSettingsValidation(
+            EmailSettingsValidationException exception,
+            HttpServletRequest request
+    ) {
+        return error(
+                HttpStatus.BAD_REQUEST,
+                "VALIDATION_ERROR",
+                exception.getMessage(),
+                exception.getFieldErrors(),
+                request
+        );
+    }
+
+    @ExceptionHandler(EmailCredentialConfigurationException.class)
+    ResponseEntity<ApiError> emailCredentialConfiguration(
+            EmailCredentialConfigurationException exception,
+            HttpServletRequest request
+    ) {
+        return error(
+                HttpStatus.SERVICE_UNAVAILABLE,
+                "EMAIL_CREDENTIAL_CONFIGURATION_ERROR",
                 exception.getMessage(),
                 Map.of(),
                 request

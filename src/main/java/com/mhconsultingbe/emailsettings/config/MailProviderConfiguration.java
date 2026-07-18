@@ -1,31 +1,22 @@
 package com.mhconsultingbe.emailsettings.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class MailProviderConfiguration {
-    private final String host;
-    private final String username;
-    private final String password;
-
-    public MailProviderConfiguration(
-            @Value("${spring.mail.host:}")
-            String host,
-            @Value("${spring.mail.username:}")
-            String username,
-            @Value("${spring.mail.password:}")
-            String password
-    ) {
-        this.host = host;
-        this.username = username;
-        this.password = password;
-    }
+    private final SmtpInfrastructureProperties infrastructure;
+    private final EffectiveSmtpCredentialProvider credentialProvider;
 
     public boolean isConfigured() {
-        return hasText(host)
-                && hasText(username)
-                && hasText(password);
+        EffectiveSmtpCredentialProvider.EffectiveSmtpCredentials credentials =
+                credentialProvider.getEffectiveCredentials();
+        return hasText(infrastructure.getHost())
+                && infrastructure.getPort() > 0
+                && infrastructure.getPort() <= 65535
+                && hasText(credentials.username())
+                && hasText(credentials.password());
     }
 
     private boolean hasText(String value) {

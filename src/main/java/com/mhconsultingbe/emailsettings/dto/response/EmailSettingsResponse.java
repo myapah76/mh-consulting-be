@@ -6,6 +6,8 @@ public record EmailSettingsResponse(
         String fromName,
         String consultationRecipientEmail,
         String deliveryProvider,
-        boolean providerConfigured
+        boolean providerConfigured,
+        String smtpUsername,
+        boolean smtpPasswordConfigured
 ) {
 }

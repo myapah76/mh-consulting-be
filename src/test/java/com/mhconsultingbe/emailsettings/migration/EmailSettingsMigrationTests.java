@@ -30,4 +30,26 @@ class EmailSettingsMigrationTests {
         assertFalse(normalized.contains("api_key"));
         assertFalse(normalized.contains("encryption_key"));
     }
+
+    @Test
+    void smtpCredentialMigrationAddsOnlyNullableEncryptedColumns() throws IOException {
+        String sql;
+        try (var stream = getClass().getResourceAsStream(
+                "/db/migration/V9__add_smtp_credentials_to_email_settings.sql"
+        )) {
+            if (stream == null) {
+                throw new IOException("SMTP credential migration not found");
+            }
+            sql = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+        }
+
+        String normalized = sql.toLowerCase(java.util.Locale.ROOT);
+        assertTrue(normalized.contains("smtp_username"));
+        assertTrue(normalized.contains("smtp_password_encrypted"));
+        assertTrue(normalized.contains("add column if not exists"));
+        assertFalse(normalized.contains("not null"));
+        assertFalse(normalized.contains("insert into"));
+        assertFalse(normalized.contains("smtp_password_hash"));
+        assertFalse(normalized.contains("encryption_key"));
+    }
 }

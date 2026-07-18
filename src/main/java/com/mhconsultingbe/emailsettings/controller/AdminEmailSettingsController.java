@@ -5,6 +5,7 @@ import com.mhconsultingbe.emailsettings.dto.request.EmailSettingsUpdateRequest;
 import com.mhconsultingbe.emailsettings.dto.request.TestEmailRequest;
 import com.mhconsultingbe.emailsettings.dto.response.EmailSettingsResponse;
 import com.mhconsultingbe.emailsettings.service.EmailSettingsOperations;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +22,8 @@ public class AdminEmailSettingsController {
     private final EmailSettingsOperations emailSettingsOperations;
 
     @GetMapping
-    public EmailSettingsResponse get() {
+    public EmailSettingsResponse get(HttpServletResponse response) {
+        noStore(response);
         return emailSettingsOperations.get();
     }
 
@@ -29,8 +31,10 @@ public class AdminEmailSettingsController {
     public EmailSettingsResponse update(
             @Valid
             @RequestBody
-            EmailSettingsUpdateRequest request
+            EmailSettingsUpdateRequest request,
+            HttpServletResponse response
     ) {
+        noStore(response);
         return emailSettingsOperations.update(request);
     }
 
@@ -38,8 +42,14 @@ public class AdminEmailSettingsController {
     public MessageResponse test(
             @Valid
             @RequestBody
-            TestEmailRequest request
+            TestEmailRequest request,
+            HttpServletResponse response
     ) {
+        noStore(response);
         return emailSettingsOperations.sendTestEmail(request);
+    }
+
+    private void noStore(HttpServletResponse response) {
+        response.setHeader("Cache-Control", "no-store");
     }
 }

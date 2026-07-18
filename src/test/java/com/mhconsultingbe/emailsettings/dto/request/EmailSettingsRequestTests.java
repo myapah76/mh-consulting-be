@@ -17,7 +17,9 @@ class EmailSettingsRequestTests {
                     null,
                     "invalid",
                     " ",
-                    "also-invalid"
+                    "also-invalid",
+                    "not-an-email",
+                    null
             );
 
             Set<String> fields = factory.getValidator().validate(request).stream()
@@ -27,7 +29,8 @@ class EmailSettingsRequestTests {
                     "enabled",
                     "fromEmail",
                     "fromName",
-                    "consultationRecipientEmail"
+                    "consultationRecipientEmail",
+                    "smtpUsername"
             )));
         }
     }
@@ -48,12 +51,16 @@ class EmailSettingsRequestTests {
                 true,
                 " FROM@EXAMPLE.COM ",
                 " MH Consulting ",
-                " RECIPIENT@EXAMPLE.COM "
+                " RECIPIENT@EXAMPLE.COM ",
+                " SMTP@EXAMPLE.COM ",
+                " app password "
         );
 
         assertEquals("FROM@EXAMPLE.COM", request.fromEmail());
         assertEquals("MH Consulting", request.fromName());
         assertEquals("RECIPIENT@EXAMPLE.COM", request.consultationRecipientEmail());
+        assertEquals("SMTP@EXAMPLE.COM", request.smtpUsername());
+        assertEquals(" app password ", request.smtpPassword());
         assertEquals("admin@example.com", new TestEmailRequest(" admin@example.com ").recipientEmail());
     }
 }

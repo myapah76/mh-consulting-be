@@ -1,5 +1,6 @@
 package com.mhconsultingbe.emailsettings.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -38,6 +39,13 @@ public class EmailSettings {
 
     @Column(name = "consultation_recipient_email", nullable = false, length = 320)
     private String consultationRecipientEmail;
+
+    @Column(name = "smtp_username", length = 320)
+    private String smtpUsername;
+
+    @JsonIgnore
+    @Column(name = "smtp_password_encrypted", length = 1000)
+    private String smtpPasswordEncrypted;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;

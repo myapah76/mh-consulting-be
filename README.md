@@ -15,7 +15,17 @@ The Compose file deliberately requires database and administrator secrets; it do
 
 Database configuration uses `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME`, and `DB_PASSWORD`. An explicit `DB_URL` such as `jdbc:postgresql://localhost:5432/mh_consulting` can still be supplied as an override.
 
-For Gmail SMTP, use port `587` with `SMTP_ENABLE_SSL=true` (STARTTLS), `SMTP_IMPLICIT_SSL=false`, and a Google App Password in `SMTP_PASSWORD`. `SMTP_FROM_NAME` controls the sender name shown to recipients. Keep the real password only in the ignored local `.env` file or the deployment platform's secret manager.
+For Gmail SMTP, use port `587` with `SMTP_ENABLE_SSL=true` (STARTTLS) and `SMTP_IMPLICIT_SSL=false`. `SMTP_USERNAME` and `SMTP_PASSWORD` are transitional fallback credentials until an administrator saves credentials through `/api/admin/email-settings`. Keep all real secrets only in the ignored local `.env` file or the deployment platform's secret manager.
+
+SMTP passwords saved through the administrator API are encrypted with AES-256-GCM. Set `EMAIL_CREDENTIALS_ENCRYPTION_KEY` to Base64 encoding of exactly 32 cryptographically random bytes, for example in PowerShell:
+
+```powershell
+$bytes = New-Object byte[] 32
+[System.Security.Cryptography.RandomNumberGenerator]::Fill($bytes)
+[Convert]::ToBase64String($bytes)
+```
+
+The key must remain stable across deployments. Losing or changing it makes the stored SMTP password unreadable; re-enter the SMTP password after a key change unless a deliberate key-rotation process is used. Never commit the real key. Local and Render environments need the same key only when they share the same database. The application can continue using the ENV fallback without a key while no encrypted database password exists, but database credential management requires the key.
 
 ## Maven
 

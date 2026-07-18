@@ -1,5 +1,6 @@
 package com.mhconsultingbe.consultation.mail;
 
+import com.mhconsultingbe.emailsettings.config.DynamicMailSenderFactory;
 import com.mhconsultingbe.emailsettings.service.EmailSettingsQuery;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class ConsultationMailService {
     private static final Logger log =
             LoggerFactory.getLogger(ConsultationMailService.class);
 
-    private final JavaMailSender mailSender;
+    private final DynamicMailSenderFactory mailSenderFactory;
     private final TemplateEngine templateEngine;
     private final EmailSettingsQuery emailSettingsQuery;
 
@@ -55,6 +56,7 @@ public class ConsultationMailService {
                     context
             );
 
+            JavaMailSender mailSender = mailSenderFactory.create();
             MimeMessage message = mailSender.createMimeMessage();
             var helper = new MimeMessageHelper(
                     message,
